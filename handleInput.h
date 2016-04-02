@@ -1,6 +1,6 @@
 
-Game handleInput(Game game);
+void handleInput(Game* game);
 
-Game titleInput(Game game);
-Game playInput(Game game);
-Game gameoverInput(Game game);
+void titleInput(Game* game);
+void playInput(Game* game);
+void gameoverInput(Game* game);

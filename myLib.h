@@ -33,6 +33,10 @@ typedef struct {
     MOVOBJ ship;
     MOVOBJ oldship;
 
+    int shotCount;
+    MOVOBJ shots[50];
+    MOVOBJ oldshots[50];
+
     MOVOBJ objs[1];
     MOVOBJ oldobjs[1];
 } Game;
@@ -142,10 +146,10 @@ void delay(int n);
 void waitForVblank();
 
 MOVOBJ movobj_new(int row, int col, int rvel, int cvel, int size, u16 color);
-Game game_new(enum GameState state, MOVOBJ objs[1]);
+Game game_new(enum GameState state);
 
 void drawImage3(int r, int c, int width, int height, const int* image);
 void drawRect(int r, int c, int height, int width, unsigned short color);
 void fillScreen(unsigned short color);
-
+void createShot(Game* game, int col, int up);
 

@@ -12,14 +12,13 @@ int main() {
     REG_DISPCTL = MODE3 | BG2_ENABLE; // switch to mode3
 
     enum GameState state = TITLE;
-    MOVOBJ objs[1];
-    Game game = game_new(state, objs);
+    Game game = game_new(state);
 
 	while(1) {
-        game = handleInput(game);
-        game = handleLogic(game);
+        handleInput(&game);
+        handleLogic(&game);
 		waitForVblank();
-        handleDraw(game);
+        handleDraw(&game);
     }
 
 	return 0;

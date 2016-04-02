@@ -4,36 +4,37 @@
 
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj);
 void moveObject(MOVOBJ* obj);
+void moveShot(MOVOBJ* obj);
 
-Game handleLogic(Game game) {
-    Game returnGame = game;
+void handleLogic(Game* game) {
 
-    switch(game.state) {
+    switch(game->state) {
         case TITLE:
-            returnGame = titleLogic(game);
+            titleLogic(game);
             break;
 		case PLAY:
-            returnGame = playLogic(game);
+            playLogic(game);
             break;
         case GAMEOVER:
-            returnGame = gameoverLogic(game);
+            gameoverLogic(game);
             break;
     }
-
-    return returnGame;
+ 
 }
 
-Game titleLogic(Game game) {
-    return game;
+void titleLogic(Game* game) {
+    if (game->shouldDrawBackground) {
+        
+    }
 }
 
-Game playLogic(Game game) {
+void playLogic(Game* game) {
     MOVOBJ *cur;
     MOVOBJ *old;
     // initialization should only happen once
     for (int i = 0; i < 1; i++) { // where 2 will be replaced by NUMOBJS
-        cur = game.objs + i;
-        old = game.oldobjs + i;
+        cur = game->objs + i;
+        old = game->oldobjs + i;
         
         if (cur->size == NULL) {
             createObject(cur, old);
@@ -42,7 +43,16 @@ Game playLogic(Game game) {
         }
 
     }
-    return game;
+
+    for (int i = 0; i < 50; i++) { // where 2 will be replaced by NUMOBJS
+        cur = game->shots + i;
+        old = game->oldshots + i;
+        
+        if (cur->size != NULL) {
+            moveShot(cur);
+        }
+
+    }
 }
 
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj) {
@@ -80,7 +90,22 @@ void moveObject(MOVOBJ* obj) {
     }
 }
 
+void moveShot(MOVOBJ* shot) {
+    shot->row += shot->rvel;
+    shot->col += shot->cvel;
 
-Game gameoverLogic(Game game) {
-    return game;
+    if ((shot->row < 0) || (shot->row > 159 - shot->size + 1) ||
+            (shot->col < 0) || (shot->col > 239 - shot->size + 1)) {
+        shot->rvel = 0;
+        shot->cvel = 0;
+        shot->row = 0;
+        shot->size = 0;
+    }
+}
+
+
+void gameoverLogic(Game* game) {
+    if (game->shouldDrawBackground) {
+        
+    }
 }

@@ -4,39 +4,45 @@
 
 void moveShip(MOVOBJ* obj, int direction);
 
-Game handleInput(Game game) {
-    Game returnGame = game;
+void handleInput(Game* game) {
 
-    switch(game.state) {
+    switch(game->state) {
         case TITLE:
-            returnGame = titleInput(game);
+            titleInput(game);
             break;
 		case PLAY:
-            returnGame = playInput(game);
+            playInput(game);
             break;
         case GAMEOVER:
-            returnGame = gameoverInput(game);
+            gameoverInput(game);
             break;
     }
 
-    return returnGame;
 }
 
-Game titleInput(Game game) {
+void titleInput(Game* game) {
     if (KEY_DOWN_NOW(BUTTON_A)) {
-        game.state = PLAY;
-        game.shouldDrawBackground = 1;
+        game->state = PLAY;
+        game->shouldDrawBackground = 1;
     }
-    return game;
 }
 
-Game playInput(Game game) {
-    if (KEY_DOWN_NOW(BUTTON_LEFT) & ~KEY_DOWN_NOW(BUTTON_RIGHT)) {
-        moveShip(&game.ship, -1);
-    } else if (KEY_DOWN_NOW(BUTTON_RIGHT) & ~KEY_DOWN_NOW(BUTTON_LEFT)) {
-        moveShip(&game.ship, 1);
+void playInput(Game* game) {
+
+    if (KEY_DOWN_NOW(BUTTON_A)) {
+        int UP = 1;
+        if (game->shotCount % 10 == 0) {
+            createShot(game, game->ship.col, UP);
+        }
+
+        game->shotCount++;
     }
-    return game;
+
+    if (KEY_DOWN_NOW(BUTTON_LEFT) & ~KEY_DOWN_NOW(BUTTON_RIGHT)) {
+        moveShip(&game->ship, -1);
+    } else if (KEY_DOWN_NOW(BUTTON_RIGHT) & ~KEY_DOWN_NOW(BUTTON_LEFT)) {
+        moveShip(&game->ship, 1);
+    }
 }
 
 void moveShip(MOVOBJ* obj, int direction) {
@@ -58,6 +64,8 @@ void moveShip(MOVOBJ* obj, int direction) {
     }
 }
 
-Game gameoverInput(Game game) {
-    return game;
+void gameoverInput(Game* game) {
+    if (game->shouldDrawBackground) {
+        game->shouldDrawBackground = 1;
+    }
 }

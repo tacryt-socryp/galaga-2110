@@ -1,6 +1,6 @@
 
-Game handleLogic(Game game);
+void handleLogic(Game* game);
 
-Game titleLogic(Game game);
-Game playLogic(Game game);
-Game gameoverLogic(Game game);
+void titleLogic(Game* game);
+void playLogic(Game* game);
+void gameoverLogic(Game* game);

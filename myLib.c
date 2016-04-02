@@ -77,12 +77,30 @@ void createShip(MOVOBJ* obj, MOVOBJ* oldobj) {
     oldobj = obj;
 }
 
-Game game_new(enum GameState state, MOVOBJ objs[1]) {
+Game game_new(enum GameState state) {
     Game g;
     g.state = state;
     g.shouldDrawBackground = 1;
+    g.shotCount = 0;
     createShip(&g.ship, &g.oldship);
-    size_t n = sizeof(objs);
-    memcpy(g.objs, objs, n);
     return g;
 }
+
+void createShot(Game* game, int col, int up) {
+
+    int rVel;
+    if (up) { // if up is 1, shoot up.
+        rVel = -2;
+    } else { // if up is 0, shoot down.
+        rVel = 2;
+    }
+
+    MOVOBJ shot = movobj_new(130, col, rVel, 0, 5, RED);
+    if (game->shotCount >= 500) {
+        game->shotCount = 0;
+    }
+
+    game->shots[game->shotCount / 10] = shot;
+    game->oldshots[game->shotCount / 10] = shot;
+}
+
