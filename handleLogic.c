@@ -46,7 +46,6 @@ void playLogic(Game* game) {
 
     for (int i = 0; i < 50; i++) { // where 2 will be replaced by NUMOBJS
         cur = game->shots + i;
-        old = game->oldshots + i;
         
         if (cur->size != NULL) {
             moveShot(cur);

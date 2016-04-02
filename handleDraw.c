@@ -65,9 +65,9 @@ void playDraw(Game* game) {
 
     // draw shots
     MOVOBJ *oldCur;
-    for (int i = 0; i < game->shotCount; i = i + 10) {
-        oldCur = game->oldshots + (i / 10);
-        cur = game->shots + (i / 10);
+    for (int i = 0; i < game->shotCount; i = i + (game->shipFireRate)) {
+        oldCur = game->oldshots + (i / game->shipFireRate);
+        cur = game->shots + (i / game->shipFireRate);
 
         if (oldCur->size != NULL) {
             drawRect(

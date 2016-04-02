@@ -33,6 +33,7 @@ typedef struct {
     MOVOBJ ship;
     MOVOBJ oldship;
 
+    int shipFireRate;
     int shotCount;
     MOVOBJ shots[50];
     MOVOBJ oldshots[50];

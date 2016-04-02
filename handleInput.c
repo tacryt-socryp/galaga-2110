@@ -31,7 +31,7 @@ void playInput(Game* game) {
 
     if (KEY_DOWN_NOW(BUTTON_A)) {
         int UP = 1;
-        if (game->shotCount % 10 == 0) {
+        if ((game->shotCount % game->shipFireRate) == 0) {
             createShot(game, game->ship.col, UP);
         }
 
@@ -48,9 +48,9 @@ void playInput(Game* game) {
 void moveShip(MOVOBJ* obj, int direction) {
     // if direction is negative, left, if direction is positive, right
     if (direction < 0) {
-        obj->col += -2; 
+        obj->col += -3; 
     } else {
-        obj->col += 2;
+        obj->col += 3;
     }
         
     if (obj->col < 0) {
