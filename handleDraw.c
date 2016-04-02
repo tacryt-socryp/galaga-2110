@@ -33,7 +33,7 @@ void playDraw(Game* game) {
     }
 
     // draw over old object locations with background color
-    for(int i=0; i<1; i++) {
+    for(int i=0; i < game->enemyCount; i++) {
         drawRect(
             game->oldobjs[i].row,
             game->oldobjs[i].col,
@@ -45,7 +45,7 @@ void playDraw(Game* game) {
 
     // draw objects
     MOVOBJ *cur;
-    for(int i=0; i<1; i++) {
+    for(int i=0; i < game->enemyCount; i++) {
         cur = game->objs + i;
         drawRect(cur->row, cur->col, cur->size, cur->size, cur->color);
         game->oldobjs[i] = game->objs[i];

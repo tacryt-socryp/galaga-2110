@@ -82,6 +82,7 @@ Game game_new(enum GameState state) {
     g.state = state;
     g.shouldDrawBackground = 1;
     g.shipFireRate = 8;
+    g.enemyCount = 5;
     g.shotCount = 0;
     createShip(&g.ship, &g.oldship);
     return g;
@@ -106,7 +107,7 @@ void createShot(Game* game, int col, int up) {
 }
 
 
-int collision(MOVOBJ *obj, MOVOBJ *shot) {
+int shotCollision(Game* game, MOVOBJ *obj, MOVOBJ *shot) {
     if (obj->row <= (shot->row + shot->size) && obj->row >= shot->row &&
             obj->col <= (shot->col + shot->size) &&
             obj->col >= shot->col) {
@@ -116,6 +117,7 @@ int collision(MOVOBJ *obj, MOVOBJ *shot) {
         obj->size = 0;
         obj->col=0;
         obj->row=0;
+        game->enemyCount--;
         return 1;
     }
 

@@ -32,7 +32,7 @@ void playLogic(Game* game) {
     MOVOBJ *cur;
     MOVOBJ *old;
     // initialization should only happen once
-    for (int i = 0; i < 1; i++) { // where 2 will be replaced by NUMOBJS
+    for (int i = 0; i < game->enemyCount; i++) {
         cur = game->objs + i;
         old = game->oldobjs + i;
         
@@ -44,11 +44,17 @@ void playLogic(Game* game) {
 
     }
 
+    MOVOBJ *obj;
     for (int i = 0; i < 50; i++) { // where 2 will be replaced by NUMOBJS
         cur = game->shots + i;
         
         if (cur->size != NULL) {
             moveShot(cur);
+            for (int e = 0; e < game->enemyCount; e++) {
+                obj = game->objs + e;
+                shotCollision(game, obj, cur);
+            }
+            // check if collision with ship
         }
 
     }
@@ -57,10 +63,10 @@ void playLogic(Game* game) {
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj) {
     obj->row = 70;
     obj->col = 110;
-    obj->rvel = 1;
+    obj->rvel = 0;
     obj->cvel = 1;
     obj->color = WHITE;
-    obj->size = 8;
+    obj->size = 5;
     oldobj = obj;
 }
 
