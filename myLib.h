@@ -30,10 +30,13 @@ typedef struct
 typedef struct {
     enum GameState state;
     u16 shouldDrawBackground;
+
+    int lives;
     MOVOBJ ship;
     MOVOBJ oldship;
 
     int shipFireRate;
+    int shotRateLimiter;
     int shotCount;
     MOVOBJ shots[50];
     MOVOBJ oldshots[50];
@@ -154,5 +157,5 @@ void drawImage3(int r, int c, int width, int height, const int* image);
 void drawRect(int r, int c, int height, int width, unsigned short color);
 void fillScreen(unsigned short color);
 void createShot(Game* game, int col, int up);
-int shotCollision(Game* game, MOVOBJ *obj, MOVOBJ *shot);
+int collision(MOVOBJ *obj, MOVOBJ *shot);
 

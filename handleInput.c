@@ -31,11 +31,14 @@ void playInput(Game* game) {
 
     if (KEY_DOWN_NOW(BUTTON_A)) {
         int UP = 1;
-        if ((game->shotCount % game->shipFireRate) == 0) {
+        if ((game->shotRateLimiter % game->shipFireRate) == 0) {
             createShot(game, game->ship.col, UP);
+            game->shotCount++;
         }
 
-        game->shotCount++;
+        game->shotRateLimiter++;
+    } else {
+        game->shotRateLimiter = 0;
     }
 
     if (KEY_DOWN_NOW(BUTTON_LEFT) & ~KEY_DOWN_NOW(BUTTON_RIGHT)) {
@@ -65,7 +68,8 @@ void moveShip(MOVOBJ* obj, int direction) {
 }
 
 void gameoverInput(Game* game) {
-    if (game->shouldDrawBackground) {
+    if (KEY_DOWN_NOW(BUTTON_A)) {
+        game->state = TITLE;
         game->shouldDrawBackground = 1;
     }
 }

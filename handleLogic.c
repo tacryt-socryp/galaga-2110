@@ -45,16 +45,18 @@ void playLogic(Game* game) {
     }
 
     MOVOBJ *obj;
-    for (int i = 0; i < 50; i++) { // where 2 will be replaced by NUMOBJS
+    for (int i = 0; i < 50; i++) {
         cur = game->shots + i;
         
         if (cur->size != NULL) {
             moveShot(cur);
+
             for (int e = 0; e < game->enemyCount; e++) {
                 obj = game->objs + e;
-                shotCollision(game, obj, cur);
+                shotCollisionEnemy(game, obj, cur);
             }
-            // check if collision with ship
+
+            shotCollisionShip(game, &game->ship, cur);
         }
 
     }
@@ -106,6 +108,30 @@ void moveShot(MOVOBJ* shot) {
         shot->row = 0;
         shot->size = 0;
     }
+}
+
+void shotCollisionEnemy(Game* game, MOVOBJ *obj, MOVOBJ *shot) {
+    int collide = collision(obj, shot);
+
+    if (collide) {
+        obj->size = 0;
+        obj->col=0;
+        obj->row=0;
+        game->enemyCount--;
+    }
+
+}
+
+void shotCollisionShip(Game* game, MOVOBJ *obj, MOVOBJ *shot) {
+    int collide = collision(obj, shot);
+    if (collide) {
+        game->lives--;
+        if (game->lives == 0) {
+            game->state = GAMEOVER;
+            game->shouldDrawBackground = 1;
+        }
+    }
+
 }
 
 
