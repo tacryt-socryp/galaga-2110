@@ -32,8 +32,7 @@ void playInput(Game* game) {
     if (KEY_DOWN_NOW(BUTTON_A)) {
         int UP = 1;
         if ((game->shotRateLimiter % game->shipFireRate) == 0) {
-            createShot(game, game->ship.col, UP);
-            game->shotCount++;
+            createShot(game, game->ship.row, game->ship.col, UP);
         }
 
         game->shotRateLimiter++;
@@ -69,6 +68,7 @@ void moveShip(MOVOBJ* obj, int direction) {
 
 void gameoverInput(Game* game) {
     if (KEY_DOWN_NOW(BUTTON_A)) {
+        delay(5);
         game->state = TITLE;
         game->shouldDrawBackground = 1;
     }

@@ -156,6 +156,6 @@ Game game_new(enum GameState state);
 void drawImage3(int r, int c, int width, int height, const int* image);
 void drawRect(int r, int c, int height, int width, unsigned short color);
 void fillScreen(unsigned short color);
-void createShot(Game* game, int col, int up);
+void createShot(Game* game, int row, int col, int up);
 int collision(MOVOBJ *obj, MOVOBJ *shot);
 

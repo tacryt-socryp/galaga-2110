@@ -20,14 +20,14 @@ void handleDraw(Game* game) {
 }
 
 void titleDraw(Game* game) {
-    if (game->shouldDrawBackground == 1) {
+    if (game->shouldDrawBackground) {
         fillScreen(MAGENTA);
         game->shouldDrawBackground = 0;
     }
 }
 
 void playDraw(Game* game) {
-    if (game->shouldDrawBackground == 1) {
+    if (game->shouldDrawBackground) {
         fillScreen(CYAN);
         game->shouldDrawBackground = 0;
     }
@@ -89,7 +89,7 @@ void playDraw(Game* game) {
 
 void gameoverDraw(Game* game) {
     if (game->shouldDrawBackground) {
-        fillScreen(GRAY);
+        fillScreen(BLUE);
         game->shouldDrawBackground = 0;
     }
 }

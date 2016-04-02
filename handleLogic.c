@@ -1,6 +1,7 @@
 
 #include "myLib.h"
 #include "handleLogic.h"
+#include "qran_tonk.h"
 
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj);
 void moveObject(MOVOBJ* obj);
@@ -24,7 +25,6 @@ void handleLogic(Game* game) {
 
 void titleLogic(Game* game) {
     if (game->shouldDrawBackground) {
-        
     }
 }
 
@@ -40,6 +40,11 @@ void playLogic(Game* game) {
             createObject(cur, old);
         } else {
             moveObject(cur);
+            int shouldShoot = (qran() * (100 - 0) >> 15) + 0;
+            int DOWN = 0;
+            if (shouldShoot == 0) {
+                createShot(game, cur->row, cur->col, DOWN);
+            }
         }
 
     }
@@ -126,7 +131,7 @@ void shotCollisionShip(Game* game, MOVOBJ *obj, MOVOBJ *shot) {
     int collide = collision(obj, shot);
     if (collide) {
         game->lives--;
-        if (game->lives == 0) {
+        if (game->lives <= 0) {
             game->state = GAMEOVER;
             game->shouldDrawBackground = 1;
         }
@@ -137,6 +142,7 @@ void shotCollisionShip(Game* game, MOVOBJ *obj, MOVOBJ *shot) {
 
 void gameoverLogic(Game* game) {
     if (game->shouldDrawBackground) {
-        
+        *game = game_new(GAMEOVER);
+        game->shouldDrawBackground = 0;
     }
 }

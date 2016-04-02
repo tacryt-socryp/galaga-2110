@@ -89,7 +89,7 @@ Game game_new(enum GameState state) {
     return g;
 }
 
-void createShot(Game* game, int col, int up) {
+void createShot(Game* game, int row, int col, int up) {
 
     int rVel;
     if (up) { // if up is 1, shoot up.
@@ -98,13 +98,20 @@ void createShot(Game* game, int col, int up) {
         rVel = 3;
     }
 
-    MOVOBJ shot = movobj_new(130, col, rVel, 0, 5, RED);
+    int startRow;
+    if (up) {
+        startRow = row + 2 * rVel;
+    } else {
+        startRow = row + rVel;
+    }
+    MOVOBJ shot = movobj_new(startRow, col, rVel, 0, 5, RED);
     if (game->shotCount >= 50) {
         game->shotCount = 0;
     }
 
     game->shots[game->shotCount] = shot;
     game->oldshots[game->shotCount] = shot;
+    game->shotCount++;
 }
 
 int collision(MOVOBJ *obj, MOVOBJ *shot) {
