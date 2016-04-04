@@ -52,8 +52,8 @@ typedef struct {
     MOVOBJ oldshots[50];
 
     int enemyCount;
-    MOVOBJ objs[5];
-    MOVOBJ oldobjs[5];
+    MOVOBJ objs[15];
+    MOVOBJ oldobjs[15];
 } Game;
 
 // defaults
@@ -168,4 +168,5 @@ void drawRect(int r, int c, int height, int width, unsigned short color);
 void fillScreen(unsigned short color);
 void createShot(Game* game, int row, int col, int up);
 int collision(MOVOBJ *obj, MOVOBJ *shot);
+void createShip(MOVOBJ* obj, MOVOBJ* oldobj);
 

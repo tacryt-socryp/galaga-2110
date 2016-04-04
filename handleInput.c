@@ -4,7 +4,7 @@
 #include "qran_tonk.h"
 
 void moveShip(MOVOBJ* obj, int direction);
-int randSeed = 0;
+int randSeed = 42;
 
 void handleInput(Game* game) {
 
@@ -73,9 +73,31 @@ void moveShip(MOVOBJ* obj, int direction) {
 
 void gameoverInput(Game* game) {
     if (KEY_DOWN_NOW(BUTTON_A)) {
-        delay(5);
+        delay(10);
         game->state = TITLE;
         game->shouldDrawBackground = 1;
-        randSeed = 0;
+        game->shipFireRate = 15;
+        game->enemyCount = 15;
+        game->shotCount = 0;
+        game->lives = 3;
+
+        MOVOBJ* cur;
+        for (int i = 0; i < 50; i++) {
+            cur = game->shots + i;
+            cur->size = 0;
+            cur = game->oldshots + i;
+            cur->size = 0;
+        }
+
+        for (int i = 0; i < 15; i++) {
+            cur = game->objs + i;
+            cur->size = 0;
+            cur = game->oldobjs + i;
+            cur->size = 0;
+        }
+
+        createShip(&game->ship, &game->oldship);
+
+        randSeed = 42;
     }
 }

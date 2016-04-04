@@ -90,7 +90,6 @@ void playDraw(Game* game) {
 void gameoverDraw(Game* game) {
     if (game->shouldDrawBackground) {
         fillScreen(BLUE);
-        game->shouldDrawBackground = 0;
     }
 }
 

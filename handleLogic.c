@@ -8,6 +8,7 @@ void moveObject(MOVOBJ* obj);
 void moveShot(MOVOBJ* obj);
 void shootingEnemyLogic(Game* game, MOVOBJ* obj);
 void rammingEnemyLogic(MOVOBJ* obj);
+void enemyCollisionShip(Game* game, MOVOBJ *ship, MOVOBJ *enemy);
 
 void handleLogic(Game* game) {
 
@@ -33,11 +34,12 @@ void titleLogic(Game* game) {
 void playLogic(Game* game) {
     MOVOBJ *cur;
     MOVOBJ *old;
+
     // initialization should only happen once
     for (int i = 0; i < game->enemyCount; i++) {
         cur = game->objs + i;
         old = game->oldobjs + i;
-        
+
         if (cur->size == NULL) {
             createObject(cur, old);
             if (i % 2 == 0) {
@@ -54,6 +56,7 @@ void playLogic(Game* game) {
                     shootingEnemyLogic(game, cur);
                     break;
                 case RAMENEMY:
+                    enemyCollisionShip(game, &game->ship, cur);
                     rammingEnemyLogic(cur);
                     break;
             }
@@ -70,7 +73,7 @@ void playLogic(Game* game) {
 
             for (int e = 0; e < game->enemyCount; e++) {
                 obj = game->objs + e;
-                shotCollisionEnemy(game, obj, cur);
+                shotCollisionEnemy(obj, cur);
             }
 
             shotCollisionShip(game, &game->ship, cur);
@@ -85,6 +88,12 @@ void shootingEnemyLogic(Game* game, MOVOBJ* obj) {
     if (shouldNotShoot == 0) {
         createShot(game, obj->row, obj->col, DOWN);
     }
+
+    int shouldChangeDirection = (qran() * (200 - 0) >> 15) + 0;
+    if (shouldChangeDirection == 0) {
+        obj->cvel = (qran() * (1 + 1) >> 15) - 1;
+    }
+    moveObject(obj);
 }
 
 void rammingEnemyLogic(MOVOBJ* obj) {
@@ -105,13 +114,13 @@ void rammingEnemyLogic(MOVOBJ* obj) {
             }
         }
     } else {
-        if (obj->rvel != 2) {
+        if (obj->rvel != 3) {
             // begin ram action
-            obj->rvel = 2;
+            obj->rvel = 3;
             obj->cvel = (qran() * (2 + 2) >> 15) - 2;
         } else if (obj->row < 20) {
             // deactivate ram action when object returns
-            obj->rvel = 1;
+            obj->rvel = 2;
             obj->isActive = 0;
         }
     }
@@ -120,8 +129,8 @@ void rammingEnemyLogic(MOVOBJ* obj) {
 }
 
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj) {
-    obj->row = 70;
-    obj->col = 110;
+    obj->row = 60;
+    obj->col = 115;
     obj->rvel = 0;
     obj->cvel = 1;
     obj->color = WHITE;
@@ -168,14 +177,13 @@ void moveShot(MOVOBJ* shot) {
     }
 }
 
-void shotCollisionEnemy(Game* game, MOVOBJ *obj, MOVOBJ *shot) {
+void shotCollisionEnemy(MOVOBJ *obj, MOVOBJ *shot) {
     int collide = collision(obj, shot);
 
     if (collide) {
         obj->size = 0;
         obj->col=0;
         obj->row=0;
-        game->enemyCount--;
     }
 
 }
@@ -192,10 +200,22 @@ void shotCollisionShip(Game* game, MOVOBJ *obj, MOVOBJ *shot) {
 
 }
 
+void enemyCollisionShip(Game* game, MOVOBJ *ship, MOVOBJ *enemy) {
+    int collide = collision(ship, enemy);
+    if (collide) {
+        game->lives--;
+        enemy->size = 0;
+        enemy->col=0;
+        enemy->row=0;
+        if (game->lives <= 0) {
+            game->state = GAMEOVER;
+            game->shouldDrawBackground = 1;
+        }
+    }
+
+}
 
 void gameoverLogic(Game* game) {
     if (game->shouldDrawBackground) {
-        *game = game_new(GAMEOVER);
-        game->shouldDrawBackground = 0;
     }
 }

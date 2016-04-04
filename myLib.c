@@ -84,7 +84,7 @@ Game game_new(enum GameState state) {
     g.state = state;
     g.shouldDrawBackground = 1;
     g.shipFireRate = 15;
-    g.enemyCount = 5;
+    g.enemyCount = 15;
     g.shotCount = 0;
     g.lives = 3;
     createShip(&g.ship, &g.oldship);
