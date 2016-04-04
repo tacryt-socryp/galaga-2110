@@ -6,6 +6,8 @@
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj);
 void moveObject(MOVOBJ* obj);
 void moveShot(MOVOBJ* obj);
+void shootingEnemyLogic(Game* game, MOVOBJ* obj);
+void rammingEnemyLogic(MOVOBJ* obj);
 
 void handleLogic(Game* game) {
 
@@ -38,12 +40,22 @@ void playLogic(Game* game) {
         
         if (cur->size == NULL) {
             createObject(cur, old);
+            if (i % 2 == 0) {
+                cur->type = SHOOTENEMY;
+            } else {
+                cur->type = RAMENEMY;
+            }
         } else {
-            moveObject(cur);
-            int shouldShoot = (qran() * (100 - 0) >> 15) + 0;
-            int DOWN = 0;
-            if (shouldShoot == 0) {
-                createShot(game, cur->row, cur->col, DOWN);
+            switch (cur->type) {
+                case SHIP:
+                    // this won't happen
+                    break;
+                case SHOOTENEMY:
+                    shootingEnemyLogic(game, cur);
+                    break;
+                case RAMENEMY:
+                    rammingEnemyLogic(cur);
+                    break;
             }
         }
 
@@ -67,6 +79,46 @@ void playLogic(Game* game) {
     }
 }
 
+void shootingEnemyLogic(Game* game, MOVOBJ* obj) {
+    int shouldNotShoot = (qran() * (200 - 0) >> 15) + 0;
+    int DOWN = 0;
+    if (shouldNotShoot == 0) {
+        createShot(game, obj->row, obj->col, DOWN);
+    }
+}
+
+void rammingEnemyLogic(MOVOBJ* obj) {
+
+    if (obj->isActive == 0) {
+        if (obj->row > 40) {
+            // possibility to activate ram if not active now
+            int shouldNotRam = (qran() * (200 - 0) >> 15) + 0;
+            obj->isActive = shouldNotRam == 0;
+        }
+
+        if (obj->row > 50) {
+            // normal state
+            obj->rvel = 0;
+            int shouldChangeDirection = (qran() * (200 - 0) >> 15) + 0;
+            if (shouldChangeDirection == 0) {
+                obj->cvel = (qran() * (1 + 1) >> 15) - 1;
+            }
+        }
+    } else {
+        if (obj->rvel != 2) {
+            // begin ram action
+            obj->rvel = 2;
+            obj->cvel = (qran() * (2 + 2) >> 15) - 2;
+        } else if (obj->row < 20) {
+            // deactivate ram action when object returns
+            obj->rvel = 1;
+            obj->isActive = 0;
+        }
+    }
+
+    moveObject(obj);
+}
+
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj) {
     obj->row = 70;
     obj->col = 110;
@@ -87,8 +139,9 @@ void moveObject(MOVOBJ* obj) {
     }
 
     if (obj->row > 159-obj->size+1) {
-        obj->row = 159-obj->size+1;
-        obj->rvel = -obj->rvel;
+        obj->row = 0;
+        // obj->row = 159-obj->size+1;
+        // obj->rvel = -obj->rvel;
     }
         
     if (obj->col < 0) {

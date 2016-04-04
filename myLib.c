@@ -64,6 +64,8 @@ MOVOBJ movobj_new(int row, int col, int rvel, int cvel, int size, u16 color) {
     a.cvel = cvel;
     a.size = size;
     a.color = color;
+    a.type = SHIP;
+    a.isActive = 0;
     return a;
 }
 

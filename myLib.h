@@ -17,6 +17,12 @@ enum GameState {
     GAMEOVER
 };
 
+enum ObjType {
+    SHIP,
+    SHOOTENEMY,
+    RAMENEMY
+};
+
 typedef struct
 {
 	int row;
@@ -24,6 +30,10 @@ typedef struct
 	int rvel;
 	int cvel;
 	int size;
+
+    enum ObjType type;
+    int isActive;    
+
 	u16 color;
 } MOVOBJ;
 

@@ -1,8 +1,10 @@
 
 #include "myLib.h"
 #include "handleInput.h"
+#include "qran_tonk.h"
 
 void moveShip(MOVOBJ* obj, int direction);
+int randSeed = 0;
 
 void handleInput(Game* game) {
 
@@ -21,9 +23,12 @@ void handleInput(Game* game) {
 }
 
 void titleInput(Game* game) {
+    randSeed++;
     if (KEY_DOWN_NOW(BUTTON_A)) {
         game->state = PLAY;
         game->shouldDrawBackground = 1;
+
+        sqran(randSeed);
     }
 }
 
@@ -71,5 +76,6 @@ void gameoverInput(Game* game) {
         delay(5);
         game->state = TITLE;
         game->shouldDrawBackground = 1;
+        randSeed = 0;
     }
 }
