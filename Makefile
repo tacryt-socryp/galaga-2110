@@ -11,12 +11,12 @@ PROGNAME = fbivsapple
 
 # The object files you want to compile into your program
 # This should be a space (SPACE!) separated list of .o files
-OFILES = main.o myLib.o handleDraw.o handleInput.o handleLogic.o qran_tonk.o font.o
+OFILES = main.o myLib.o handleDraw.o handleInput.o handleLogic.o qran_tonk.o font.o apple.o
 
 # The header files you have created.
 # This is necessary to determine when to recompile for files.
 # This should be a space (SPACE!) separated list of .h files
-HFILES = myLib.h handleDraw.h handleInput.h handleLogic.h qran_tonk.h
+HFILES = myLib.h handleDraw.h handleInput.h handleLogic.h qran_tonk.h apple.h
 
 ################################################################################
 # These are various settings used to make the GBA toolchain work

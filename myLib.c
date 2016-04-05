@@ -18,12 +18,12 @@ void setPixel(int r, int c, unsigned short color) {
     * @param image Pointer to the first element of the image.
 */
 
-void drawImage3(int r, int c, int width, int height, const int* image) {
+void drawImage3(int r, int c, int width, int height, const unsigned short* image) {
 
 	for (int y = 0; y < height; y++) {
-		DMA[3].src = &image[y * (width / 2)];
-        DMA[3].dst = videoBuffer + OFFSET(r + y, c, SCREENWIDTH) / 2;
-		DMA[3].cnt = (width / 2) | DMA_ON;
+		DMA[3].src = &image[y * width];
+        DMA[3].dst = videoBuffer + OFFSET(r + y, c, SCREENWIDTH);
+		DMA[3].cnt = (width) | DMA_ON;
 	}
 }
 
@@ -79,7 +79,7 @@ void createShip(MOVOBJ* obj, MOVOBJ* oldobj) {
     obj->rvel = 0;
     obj->cvel = 0;
     obj->color = WHITE;
-    obj->size = 10;
+    obj->size = 18;
     obj->type = SHIP;
     oldobj = obj;
 }

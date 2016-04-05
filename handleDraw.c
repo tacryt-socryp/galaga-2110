@@ -1,6 +1,7 @@
 
 #include "myLib.h"
 #include "handleDraw.h"
+#include "apple.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -87,13 +88,14 @@ void playDraw(Game* game) {
 
     // draw ship
     cur = &game->ship;
-    drawRect(cur->row, cur->col, cur->size, cur->size, cur->color);
+    // drawRect(cur->row, cur->col, cur->size, cur->size, cur->color);
+    drawImage3(cur->row, cur->col, APPLE_WIDTH, APPLE_HEIGHT, apple);
     game->oldship = game->ship;
 
     // draw text for lives
-    drawRect(1, 1, 8, 48, game->backgroundColor);
-    char lives[10];
-    sprintf(lives, "Lives: %d", game->lives);
+    drawRect(1, 1, 8, 16, game->backgroundColor);
+    char lives[3];
+    sprintf(lives, "\x03%d", game->lives);
     drawString(1, 1, lives, WHITE);
 
 }
