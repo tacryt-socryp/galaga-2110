@@ -37,6 +37,8 @@ void playDraw(Game* game) {
             replaceColor = CYAN;
         } else if (game->backgroundColor == BLACK) {
             replaceColor = GREEN;
+        } else if (game->backgroundColor == RED) {
+            replaceColor = BLACK;
         }
 
         for (int i = 0; i < APPLE_HEIGHT * APPLE_WIDTH; i++) {

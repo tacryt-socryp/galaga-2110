@@ -72,7 +72,7 @@ void moveShip(MOVOBJ* obj, int direction) {
 }
 
 void gameoverInput(Game* game) {
-    if (KEY_DOWN_NOW(BUTTON_A)) {
+    if (KEY_DOWN_NOW(BUTTON_A)) { // change to B button
         delay(10);
         game->shouldDrawBackground = 1;
         game->shipFireRate = 15;
@@ -80,6 +80,7 @@ void gameoverInput(Game* game) {
         game->deadCount = 15;
         game->shotCount = 0;
         game->lives = 3;
+        game->waveNumber = 0;
         game->backgroundColor = CYAN;
 
         MOVOBJ* cur;

@@ -114,7 +114,7 @@ void createShot(Game* game, int row, int col, int up) {
     } else {
         startRow = row + rVel;
     }
-    MOVOBJ shot = movobj_new(startRow, col, rVel, 0, 5, RED);
+    MOVOBJ shot = movobj_new(startRow, col, rVel, 0, 3, GRAY);
     if (game->shotCount >= 50) {
         game->shotCount = 0;
     }
@@ -125,12 +125,14 @@ void createShot(Game* game, int row, int col, int up) {
 }
 
 int collision(MOVOBJ *obj, MOVOBJ *shot) {
-    if (obj->row <= (shot->row + shot->size) && obj->row >= shot->row &&
-            obj->col <= (shot->col + shot->size) &&
-            obj->col >= shot->col) {
+
+    if (obj->col <= shot->col + shot->size &&
+            obj->col + obj->size >= shot->col &&
+            obj->row <= shot->row + shot->size &&
+            obj->row + obj->size >= shot->row) {
         shot->size = 0;
-        shot->col=0;
-        shot->row=0;
+        shot->col = 0;
+        shot->row = 0;
 
         return 1;
     }

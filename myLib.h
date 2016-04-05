@@ -79,7 +79,7 @@ extern unsigned short *videoBuffer;
 #define MAGENTA COLOR(31,0,31)
 #define WHITE COLOR(31,31,31)
 #define BLACK 0
-#define GRAY COLOR(31,31,31)
+#define GRAY COLOR(15,15,15)
 #define OFFSET(r, c, rowlen) ((r)*(rowlen) + (c))
 
 // Buttons

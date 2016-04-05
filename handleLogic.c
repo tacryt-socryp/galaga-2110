@@ -6,8 +6,8 @@
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj);
 void moveObject(MOVOBJ* obj);
 void moveShot(MOVOBJ* obj);
-void shootingEnemyLogic(Game* game, MOVOBJ* obj);
-void rammingEnemyLogic(MOVOBJ* obj);
+void shootingEnemyLogic(Game* game, MOVOBJ* obj, int waveNumber);
+void rammingEnemyLogic(MOVOBJ* obj, int waveNumber);
 
 void nextWave(MOVOBJ* cur, MOVOBJ* old, int i);
 void continueWave(Game* game, MOVOBJ* cur);
@@ -46,9 +46,11 @@ void playLogic(Game* game) {
             game->backgroundColor = GREEN;
         } else if (game->waveNumber == 3) {
             game->backgroundColor = BLACK;
+        } else if (game->waveNumber == 4) {
+            game->backgroundColor = RED;
         }
         game->deadCount = 0;
-        game->enemyCount = 5 + game->waveNumber * 10;
+        game->enemyCount = game->waveNumber * 5;
         game->shouldDrawBackground = 1;
         for (int i = 0; i < game->enemyCount; i++) {
             enemy = game->objs + i;
@@ -74,7 +76,9 @@ void playLogic(Game* game) {
 
             for (int e = 0; e < game->enemyCount; e++) {
                 enemy = game->objs + e;
-                shotCollisionEnemy(game, enemy, shot);
+                if (enemy->size != NULL) {
+                    shotCollisionEnemy(game, enemy, shot);
+                }
             }
 
             shotCollisionShip(game, &game->ship, shot);
@@ -101,42 +105,43 @@ void continueWave(Game *game, MOVOBJ* cur) {
         // this won't happen
         break;
     case SHOOTENEMY:
-        shootingEnemyLogic(game, cur);
+        shootingEnemyLogic(game, cur, game->waveNumber);
         break;
     case RAMENEMY:
         enemyCollisionShip(game, &game->ship, cur);
-        rammingEnemyLogic(cur);
+        rammingEnemyLogic(cur, game->waveNumber);
         break;
     }
 }
 
-void shootingEnemyLogic(Game* game, MOVOBJ* obj) {
-    int shouldNotShoot = (qran() * (300 - 0) >> 15) + 0;
+void shootingEnemyLogic(Game* game, MOVOBJ* obj, int waveNumber) {
+    int shouldNotShoot = (qran() * (500 - (waveNumber * 50)) >> 15) + 0;
     int DOWN = 0;
     if (shouldNotShoot == 0) {
         createShot(game, obj->row, obj->col, DOWN);
     }
 
-    int shouldChangeDirection = (qran() * (200 - 0) >> 15) + 0;
+    int shouldChangeDirection = (qran() * (250 - (waveNumber * 50)) >> 15) + 0;
     if (shouldChangeDirection == 0) {
-        obj->cvel = (qran() * (1 + 1) >> 15) - 1;
+        int velocityRange = waveNumber / 2 + 1;
+        obj->cvel = (qran() * (2 * velocityRange) >> 15) - (velocityRange);
     }
     moveObject(obj);
 }
 
-void rammingEnemyLogic(MOVOBJ* obj) {
+void rammingEnemyLogic(MOVOBJ* obj, int waveNumber) {
 
     if (obj->isActive == 0) {
         if (obj->row > 40) {
             // possibility to activate ram if not active now
-            int shouldNotRam = (qran() * (400 - 0) >> 15) + 0;
+            int shouldNotRam = (qran() * (750 - (waveNumber * 50)) >> 15) + 0;
             obj->isActive = shouldNotRam == 0;
         }
 
         if (obj->row > 50) {
             // normal state
             obj->rvel = 0;
-            int shouldChangeDirection = (qran() * (200 - 0) >> 15) + 0;
+            int shouldChangeDirection = (qran() * (250 - (waveNumber * 50)) >> 15) + 0;
             if (shouldChangeDirection == 0) {
                 obj->cvel = (qran() * (1 + 1) >> 15) - 1;
             }
