@@ -50,6 +50,39 @@ void playInput(Game* game) {
     } else if (KEY_DOWN_NOW(BUTTON_RIGHT) & ~KEY_DOWN_NOW(BUTTON_LEFT)) {
         moveShip(&game->ship, 1);
     }
+
+    if (KEY_DOWN_NOW(BUTTON_SELECT)) {
+        delay(10);
+        game->shouldDrawBackground = 1;
+        game->shipFireRate = 15;
+        game->enemyCount = 15;
+        game->deadCount = 15;
+        game->shotCount = 0;
+        game->lives = 3;
+        game->waveNumber = 0;
+        game->score = 0;
+        game->backgroundColor = CYAN;
+
+        MOVOBJ* cur;
+        for (int i = 0; i < 50; i++) {
+            cur = game->shots + i;
+            cur->size = 0;
+            cur = game->oldshots + i;
+            cur->size = 0;
+        }
+
+        for (int i = 0; i < 15; i++) {
+            cur = game->objs + i;
+            cur->size = 0;
+            cur = game->oldobjs + i;
+            cur->size = 0;
+        }
+
+        createShip(&game->ship, &game->oldship);
+
+        randSeed = 42;
+        game->state = TITLE;
+    }
 }
 
 void moveShip(MOVOBJ* obj, int direction) {

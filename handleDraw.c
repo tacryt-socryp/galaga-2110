@@ -147,8 +147,7 @@ void playDraw(Game* game) {
 void gameoverDraw(Game* game) {
     if (game->shouldDrawBackground) {
         drawImage3(0, 0, GAMEOVER_WIDTH, GAMEOVER_HEIGHT, gameover);
-
-
+        game->shouldDrawBackground = 0;
     }
 
     drawString(63, 100, "GAME OVER", WHITE);
