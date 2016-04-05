@@ -74,12 +74,13 @@ void moveShip(MOVOBJ* obj, int direction) {
 void gameoverInput(Game* game) {
     if (KEY_DOWN_NOW(BUTTON_A)) {
         delay(10);
-        game->state = TITLE;
         game->shouldDrawBackground = 1;
         game->shipFireRate = 15;
         game->enemyCount = 15;
+        game->deadCount = 15;
         game->shotCount = 0;
         game->lives = 3;
+        game->backgroundColor = CYAN;
 
         MOVOBJ* cur;
         for (int i = 0; i < 50; i++) {
@@ -99,5 +100,6 @@ void gameoverInput(Game* game) {
         createShip(&game->ship, &game->oldship);
 
         randSeed = 42;
+        game->state = TITLE;
     }
 }

@@ -5,5 +5,6 @@ void titleLogic(Game* game);
 void playLogic(Game* game);
 void gameoverLogic(Game* game);
 
-void shotCollisionEnemy(MOVOBJ *obj, MOVOBJ *shot);
-void shotCollisionShip(Game* game, MOVOBJ *obj, MOVOBJ *shot);
+void shotCollisionEnemy(Game* game, MOVOBJ *enemy, MOVOBJ *shot);
+void shotCollisionShip(Game* game, MOVOBJ *ship, MOVOBJ *shot);
+void enemyCollisionShip(Game* game, MOVOBJ *ship, MOVOBJ *enemy);

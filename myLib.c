@@ -4,6 +4,10 @@
 
 unsigned short *videoBuffer = (unsigned short *)0x6000000;
 
+void setPixel(int r, int c, unsigned short color) {
+	videoBuffer[OFFSET(r, c, 240)] = color;
+}
+
 /*  drawimage3
     * A function that will draw an arbitrary sized image
     * onto the screen (with DMA).
@@ -76,6 +80,7 @@ void createShip(MOVOBJ* obj, MOVOBJ* oldobj) {
     obj->cvel = 0;
     obj->color = WHITE;
     obj->size = 10;
+    obj->type = SHIP;
     oldobj = obj;
 }
 
@@ -85,8 +90,11 @@ Game game_new(enum GameState state) {
     g.shouldDrawBackground = 1;
     g.shipFireRate = 15;
     g.enemyCount = 15;
+    g.deadCount = 15;
     g.shotCount = 0;
     g.lives = 3;
+    g.waveNumber = 0;
+    g.backgroundColor = CYAN;
     createShip(&g.ship, &g.oldship);
     return g;
 }
@@ -127,6 +135,24 @@ int collision(MOVOBJ *obj, MOVOBJ *shot) {
         return 1;
     }
     return 0;
+}
+
+
+void drawChar(int row, int col, char ch, u16 color) {
+	for(int r=0; r<8; r++) {
+		for(int c=0; c<6; c++) {
+			if(fontdata_6x8[OFFSET(r, c, 6) + ch*48]) {
+				setPixel(row+r, col+c, color);
+			}
+		}
+	}
+}
+
+void drawString(int row, int col, char *str, u16 color) {
+	while(*str) {
+		drawChar(row, col, *str++, color);
+		col += 6;
+	}
 }
 
 

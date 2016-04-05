@@ -11,7 +11,7 @@ PROGNAME = fbivsapple
 
 # The object files you want to compile into your program
 # This should be a space (SPACE!) separated list of .o files
-OFILES = main.o myLib.o handleDraw.o handleInput.o handleLogic.o qran_tonk.o
+OFILES = main.o myLib.o handleDraw.o handleInput.o handleLogic.o qran_tonk.o font.o
 
 # The header files you have created.
 # This is necessary to determine when to recompile for files.

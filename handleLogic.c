@@ -8,7 +8,9 @@ void moveObject(MOVOBJ* obj);
 void moveShot(MOVOBJ* obj);
 void shootingEnemyLogic(Game* game, MOVOBJ* obj);
 void rammingEnemyLogic(MOVOBJ* obj);
-void enemyCollisionShip(Game* game, MOVOBJ *ship, MOVOBJ *enemy);
+
+void nextWave(MOVOBJ* cur, MOVOBJ* old, int i);
+void continueWave(Game* game, MOVOBJ* cur);
 
 void handleLogic(Game* game) {
 
@@ -32,58 +34,84 @@ void titleLogic(Game* game) {
 }
 
 void playLogic(Game* game) {
-    MOVOBJ *cur;
-    MOVOBJ *old;
+    MOVOBJ *enemy;
+    MOVOBJ *oldEnemy;
 
-    // initialization should only happen once
-    for (int i = 0; i < game->enemyCount; i++) {
-        cur = game->objs + i;
-        old = game->oldobjs + i;
-
-        if (cur->size == NULL) {
-            createObject(cur, old);
-            if (i % 2 == 0) {
-                cur->type = SHOOTENEMY;
-            } else {
-                cur->type = RAMENEMY;
-            }
-        } else {
-            switch (cur->type) {
-                case SHIP:
-                    // this won't happen
-                    break;
-                case SHOOTENEMY:
-                    shootingEnemyLogic(game, cur);
-                    break;
-                case RAMENEMY:
-                    enemyCollisionShip(game, &game->ship, cur);
-                    rammingEnemyLogic(cur);
-                    break;
-            }
+    if (game->deadCount == game->enemyCount) {
+        // begin new wave
+        game->waveNumber++;
+        if (game->waveNumber == 1) {
+            game->backgroundColor = CYAN;
+        } else if (game->waveNumber == 2) {
+            game->backgroundColor = GREEN;
+        } else if (game->waveNumber == 3) {
+            game->backgroundColor = BLACK;
         }
+        game->deadCount = 0;
+        game->enemyCount = 5 + game->waveNumber * 10;
+        game->shouldDrawBackground = 1;
+        for (int i = 0; i < game->enemyCount; i++) {
+            enemy = game->objs + i;
+            oldEnemy = game->oldobjs + i;
 
+            nextWave(enemy, oldEnemy, i);
+        }
+    } else {
+        for (int i = 0; i < game->enemyCount; i++) {
+            enemy = game->objs + i;
+
+            continueWave(game, enemy);
+        }
     }
 
-    MOVOBJ *obj;
+
+    MOVOBJ *shot;
     for (int i = 0; i < 50; i++) {
-        cur = game->shots + i;
+        shot = game->shots + i;
         
-        if (cur->size != NULL) {
-            moveShot(cur);
+        if (shot->size != NULL) {
+            moveShot(shot);
 
             for (int e = 0; e < game->enemyCount; e++) {
-                obj = game->objs + e;
-                shotCollisionEnemy(obj, cur);
+                enemy = game->objs + e;
+                shotCollisionEnemy(game, enemy, shot);
             }
 
-            shotCollisionShip(game, &game->ship, cur);
+            shotCollisionShip(game, &game->ship, shot);
         }
 
     }
 }
 
+void nextWave(MOVOBJ* cur, MOVOBJ* old, int i) {
+    createObject(cur, old);
+    if (i % 2 == 0) {
+        cur->type = SHOOTENEMY;
+    } else {
+        cur->type = RAMENEMY;
+    }
+}
+
+void continueWave(Game *game, MOVOBJ* cur) {
+    switch (cur->type) {
+    case DEAD:
+        // do nothing
+        break;
+    case SHIP:
+        // this won't happen
+        break;
+    case SHOOTENEMY:
+        shootingEnemyLogic(game, cur);
+        break;
+    case RAMENEMY:
+        enemyCollisionShip(game, &game->ship, cur);
+        rammingEnemyLogic(cur);
+        break;
+    }
+}
+
 void shootingEnemyLogic(Game* game, MOVOBJ* obj) {
-    int shouldNotShoot = (qran() * (200 - 0) >> 15) + 0;
+    int shouldNotShoot = (qran() * (300 - 0) >> 15) + 0;
     int DOWN = 0;
     if (shouldNotShoot == 0) {
         createShot(game, obj->row, obj->col, DOWN);
@@ -101,7 +129,7 @@ void rammingEnemyLogic(MOVOBJ* obj) {
     if (obj->isActive == 0) {
         if (obj->row > 40) {
             // possibility to activate ram if not active now
-            int shouldNotRam = (qran() * (200 - 0) >> 15) + 0;
+            int shouldNotRam = (qran() * (400 - 0) >> 15) + 0;
             obj->isActive = shouldNotRam == 0;
         }
 
@@ -177,19 +205,19 @@ void moveShot(MOVOBJ* shot) {
     }
 }
 
-void shotCollisionEnemy(MOVOBJ *obj, MOVOBJ *shot) {
-    int collide = collision(obj, shot);
+void shotCollisionEnemy(Game* game, MOVOBJ *enemy, MOVOBJ *shot) {
+    int collide = collision(enemy, shot);
 
     if (collide) {
-        obj->size = 0;
-        obj->col=0;
-        obj->row=0;
+        enemy->size = 0;
+        enemy->type = DEAD;
+        game->deadCount++;
     }
 
 }
 
-void shotCollisionShip(Game* game, MOVOBJ *obj, MOVOBJ *shot) {
-    int collide = collision(obj, shot);
+void shotCollisionShip(Game* game, MOVOBJ *ship, MOVOBJ *shot) {
+    int collide = collision(ship, shot);
     if (collide) {
         game->lives--;
         if (game->lives <= 0) {
@@ -205,8 +233,8 @@ void enemyCollisionShip(Game* game, MOVOBJ *ship, MOVOBJ *enemy) {
     if (collide) {
         game->lives--;
         enemy->size = 0;
-        enemy->col=0;
-        enemy->row=0;
+        enemy->type = DEAD;
+        game->deadCount++;
         if (game->lives <= 0) {
             game->state = GAMEOVER;
             game->shouldDrawBackground = 1;

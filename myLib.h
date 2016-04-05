@@ -18,6 +18,7 @@ enum GameState {
 };
 
 enum ObjType {
+    DEAD,
     SHIP,
     SHOOTENEMY,
     RAMENEMY
@@ -40,6 +41,7 @@ typedef struct
 typedef struct {
     enum GameState state;
     u16 shouldDrawBackground;
+    int backgroundColor;
 
     int lives;
     MOVOBJ ship;
@@ -51,9 +53,11 @@ typedef struct {
     MOVOBJ shots[50];
     MOVOBJ oldshots[50];
 
+    int waveNumber;
     int enemyCount;
-    MOVOBJ objs[15];
-    MOVOBJ oldobjs[15];
+    int deadCount;
+    MOVOBJ objs[100];
+    MOVOBJ oldobjs[100];
 } Game;
 
 // defaults
@@ -169,4 +173,10 @@ void fillScreen(unsigned short color);
 void createShot(Game* game, int row, int col, int up);
 int collision(MOVOBJ *obj, MOVOBJ *shot);
 void createShip(MOVOBJ* obj, MOVOBJ* oldobj);
+
+extern const unsigned char fontdata_6x8[12288];
+
+void drawChar(int row, int col, char ch, u16 color);
+void drawString(int row, int col, char *str, u16 color);
+
 
