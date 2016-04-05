@@ -81,6 +81,7 @@ void gameoverInput(Game* game) {
         game->shotCount = 0;
         game->lives = 3;
         game->waveNumber = 0;
+        game->score = 0;
         game->backgroundColor = CYAN;
 
         MOVOBJ* cur;

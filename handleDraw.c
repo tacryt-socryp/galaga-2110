@@ -2,6 +2,10 @@
 #include "myLib.h"
 #include "handleDraw.h"
 #include "apple.h"
+#include "firefox.h"
+#include "chrome.h"
+#include "title.h"
+#include "gameover.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -23,8 +27,11 @@ void handleDraw(Game* game) {
 
 void titleDraw(Game* game) {
     if (game->shouldDrawBackground) {
-        fillScreen(MAGENTA);
+        drawImage3(0, 0, TITLE_WIDTH, TITLE_HEIGHT, title);
         game->shouldDrawBackground = 0;
+        drawString(63, 100, "WELCOME TO", WHITE);
+        drawString(72, 100, "THE", WHITE);
+        drawString(80, 100, "BROWSER WARS", WHITE);
     }
 }
 
@@ -46,7 +53,19 @@ void playDraw(Game* game) {
                 apple[i] = game->backgroundColor;
             }
         }
-        delay(20);
+
+        for (int i = 0; i < CHROME_HEIGHT * CHROME_WIDTH; i++) {
+            if (chrome[i] == replaceColor) {
+                chrome[i] = game->backgroundColor;
+            }
+        }
+
+        for (int i = 0; i < FIREFOX_HEIGHT * FIREFOX_WIDTH; i++) {
+            if (firefox[i] == replaceColor) {
+                firefox[i] = game->backgroundColor;
+            }
+        }
+        delay(10);
     }
 
     // draw over old object locations with background color
@@ -99,31 +118,62 @@ void playDraw(Game* game) {
     sprintf(lives, "\x03%d", game->lives);
     drawString(1, 1, lives, WHITE);
 
+    // draw score
+    drawRect(9, 1, 8, 18, game->backgroundColor);
+    char score[4];
+    sprintf(score, "%d", game->score);
+    drawString(9, 1, score, WHITE);
+
     // draw objects
     for(int i=0; i < game->enemyCount; i++) {
         cur = game->objs + i;
         if (cur->type != DEAD) {
-            drawRect(cur->row, cur->col, cur->size, cur->size, cur->color);
+            if (cur->type == SHOOTENEMY) {
+                drawImageNotConst(cur->row, cur->col, CHROME_WIDTH, CHROME_HEIGHT, chrome);
+            } else if (cur->type == RAMENEMY) {
+                drawImageNotConst(cur->row, cur->col, FIREFOX_WIDTH, FIREFOX_HEIGHT, firefox);
+            }
             game->oldobjs[i] = game->objs[i];
         }
     }
 
     // draw ship
     cur = &game->ship;
-    drawImage3(cur->row, cur->col, APPLE_WIDTH, APPLE_HEIGHT, apple);
+    drawImageNotConst(cur->row, cur->col, APPLE_WIDTH, APPLE_HEIGHT, apple);
     game->oldship = game->ship;
 
 }
 
 void gameoverDraw(Game* game) {
     if (game->shouldDrawBackground) {
-        fillScreen(BLUE);
-        unsigned short replaceColor = game->backgroundColor;
+        drawImage3(0, 0, GAMEOVER_WIDTH, GAMEOVER_HEIGHT, gameover);
 
-        for (int i = 0; i < APPLE_HEIGHT * APPLE_WIDTH; i++) {
-            if (apple[i] == replaceColor) {
-                apple[i] = CYAN;
-            }
+
+    }
+
+    drawString(63, 100, "GAME OVER", WHITE);
+    char score[4];
+    sprintf(score, "%d", game->score);
+    drawString(72, 100, score, WHITE);
+
+
+    unsigned short replaceColor = game->backgroundColor;
+
+    for (int i = 0; i < CHROME_HEIGHT * CHROME_WIDTH; i++) {
+        if (chrome[i] == replaceColor) {
+            chrome[i] = CYAN;
+        }
+    }
+
+    for (int i = 0; i < FIREFOX_HEIGHT * FIREFOX_WIDTH; i++) {
+        if (firefox[i] == replaceColor) {
+            firefox[i] = CYAN;
+        }
+    }
+
+    for (int i = 0; i < APPLE_HEIGHT * APPLE_WIDTH; i++) {
+        if (apple[i] == replaceColor) {
+            apple[i] = CYAN;
         }
     }
 }

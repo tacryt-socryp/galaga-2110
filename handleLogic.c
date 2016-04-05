@@ -115,13 +115,13 @@ void continueWave(Game *game, MOVOBJ* cur) {
 }
 
 void shootingEnemyLogic(Game* game, MOVOBJ* obj, int waveNumber) {
-    int shouldNotShoot = (qran() * (500 - (waveNumber * 50)) >> 15) + 0;
+    int shouldNotShoot = (qran() * (300 - (waveNumber * 50)) >> 15) + 0;
     int DOWN = 0;
     if (shouldNotShoot == 0) {
-        createShot(game, obj->row, obj->col, DOWN);
+        createShot(game, obj->row + obj->size + 1, obj->col, DOWN);
     }
 
-    int shouldChangeDirection = (qran() * (250 - (waveNumber * 50)) >> 15) + 0;
+    int shouldChangeDirection = (qran() * (300 - (waveNumber * 50)) >> 15) + 0;
     if (shouldChangeDirection == 0) {
         int velocityRange = waveNumber / 2 + 1;
         obj->cvel = (qran() * (2 * velocityRange) >> 15) - (velocityRange);
@@ -134,14 +134,14 @@ void rammingEnemyLogic(MOVOBJ* obj, int waveNumber) {
     if (obj->isActive == 0) {
         if (obj->row > 40) {
             // possibility to activate ram if not active now
-            int shouldNotRam = (qran() * (750 - (waveNumber * 50)) >> 15) + 0;
+            int shouldNotRam = (qran() * (700 - (waveNumber * 50)) >> 15) + 0;
             obj->isActive = shouldNotRam == 0;
         }
 
         if (obj->row > 50) {
             // normal state
             obj->rvel = 0;
-            int shouldChangeDirection = (qran() * (250 - (waveNumber * 50)) >> 15) + 0;
+            int shouldChangeDirection = (qran() * (300 - (waveNumber * 50)) >> 15) + 0;
             if (shouldChangeDirection == 0) {
                 obj->cvel = (qran() * (1 + 1) >> 15) - 1;
             }
@@ -162,12 +162,12 @@ void rammingEnemyLogic(MOVOBJ* obj, int waveNumber) {
 }
 
 void createObject(MOVOBJ* obj, MOVOBJ* oldobj) {
-    obj->row = 60;
-    obj->col = 115;
+    obj->row = (qran() * (20) >> 15) + 50; // between 50 and 70
+    obj->col = (qran() * (60) >> 15) + 80; // between 80 and 140
     obj->rvel = 0;
     obj->cvel = 1;
     obj->color = WHITE;
-    obj->size = 5;
+    obj->size = 8;
     oldobj = obj;
 }
 
@@ -213,10 +213,11 @@ void moveShot(MOVOBJ* shot) {
 void shotCollisionEnemy(Game* game, MOVOBJ *enemy, MOVOBJ *shot) {
     int collide = collision(enemy, shot);
 
-    if (collide) {
+    if (collide && shot->rvel < 0) {
         enemy->size = 0;
         enemy->type = DEAD;
         game->deadCount++;
+        game->score++;
     }
 
 }
@@ -240,6 +241,7 @@ void enemyCollisionShip(Game* game, MOVOBJ *ship, MOVOBJ *enemy) {
         enemy->size = 0;
         enemy->type = DEAD;
         game->deadCount++;
+        game->score++;
         if (game->lives <= 0) {
             game->state = GAMEOVER;
             game->shouldDrawBackground = 1;

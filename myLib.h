@@ -47,6 +47,7 @@ typedef struct {
     MOVOBJ ship;
     MOVOBJ oldship;
 
+    int score;
     int shipFireRate;
     int shotRateLimiter;
     int shotCount;
@@ -167,7 +168,8 @@ void waitForVblank();
 MOVOBJ movobj_new(int row, int col, int rvel, int cvel, int size, u16 color);
 Game game_new(enum GameState state);
 
-void drawImage3(int r, int c, int width, int height, unsigned short* image);
+void drawImage3(int r, int c, int width, int height, const unsigned short* image);
+void drawImageNotConst(int r, int c, int width, int height, unsigned short* image);
 void drawRect(int r, int c, int height, int width, unsigned short color);
 void fillScreen(unsigned short color);
 void createShot(Game* game, int row, int col, int up);
